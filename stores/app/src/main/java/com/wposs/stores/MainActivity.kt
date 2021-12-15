@@ -2,10 +2,72 @@ package com.wposs.stores
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import com.wposs.stores.databinding.ActivityMainBinding
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnClickListener {
+
+    private lateinit var mBinding:ActivityMainBinding
+    private lateinit var mAdapter: StoreAdapter
+    private lateinit var mGridLayout:GridLayoutManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
+
+        mBinding.btnSave.setOnClickListener {
+            val store = StoreEntity(name = mBinding.etName.text.toString().trim())
+
+            Thread{
+                StoreAplication.database.storeDao().addStore(store)
+            }.start()
+
+            mAdapter.add(store)
+        }
+
+        setupRecyclerView()
+
     }
+
+    private fun setupRecyclerView() {
+        mAdapter = StoreAdapter(mutableListOf(), this)
+        mGridLayout = GridLayoutManager(this, 2)
+        getStores()
+        mBinding.reciclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = mGridLayout
+            adapter = mAdapter
+        }
+    }
+
+    private fun getStores(){
+        doAsync {
+            val stores = StoreAplication.database.storeDao().getAllStores()
+            uiThread {
+                mAdapter.setStores(stores)
+            }
+        }
+    }
+
+    /*
+    *OnClickListener
+    * */
+    override fun onClick(storeEntity: StoreEntity) {
+
+    }
+
+    override fun onFavoriteStore(storeEntity: StoreEntity) {
+        storeEntity.isFavotite = !storeEntity.isFavotite
+        doAsync {
+            StoreAplication.database.storeDao().updateStore(storeEntity)
+            uiThread {
+                mAdapter.update(storeEntity)
+            }
+        }
+    }
+
+
 }
