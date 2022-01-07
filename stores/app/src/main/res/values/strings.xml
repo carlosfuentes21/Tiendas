@@ -2,4 +2,14 @@
     <string name="app_name">Tiendas</string>
     <string name="description_img_photo">Imagen de la tienda</string>
     <string name="description_store">Crear tienda</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hind_name">nombre de la tienda</string>
+    <string name="helper_required">requerido</string>
+    <string name="hind_phone">telefono</string>
+    <string name="hind_website">url del sitio web</string>
+    <string name="hind_photo_url">url de la imagen</string>
+    <string name="edit_store_add">Crear tienda</string>
+    <string name="menu_save">Save</string>
+    <string name="edit_store_message_save_success">Tienda agregada</string>
 </resources>
