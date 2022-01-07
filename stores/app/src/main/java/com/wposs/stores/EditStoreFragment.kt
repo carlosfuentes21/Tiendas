@@ -4,7 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
 import com.wposs.stores.databinding.FragmentEditStoreBinding
 import org.jetbrains.anko.doAsync
@@ -17,12 +21,8 @@ class EditStoreFragment : Fragment() {
     private lateinit var mBinding: FragmentEditStoreBinding
     private var mActivity: MainActivity? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentEditStoreBinding.inflate(inflater, container, false)
-
         return mBinding.root
     }
 
@@ -35,6 +35,13 @@ class EditStoreFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
+        mBinding.etPhotoUrl.addTextChangedListener {
+            Glide.with(this)
+                .load("https://2img.net/u/4011/72/65/52/avatars/33-16.jpg")
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(mBinding.imgPhoto)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -56,16 +63,15 @@ class EditStoreFragment : Fragment() {
                 )
 
                 doAsync {
-                    StoreAplication.database.storeDao().addStore(store)
+                    store.id = StoreAplication.database.storeDao().addStore(store)
                     uiThread {
                         mActivity?.addStore(store)
                         hideKeyBoard()
-                        Snackbar.make(
-                            mBinding.root,
-                            getString(R.string.edit_store_message_save_success),
-                            Snackbar.LENGTH_SHORT
-                        )
-                            .show()
+                        Toast.makeText(
+                            mActivity,
+                            R.string.edit_store_message_save_success,
+                            Toast.LENGTH_SHORT
+                        ).show()
                         mActivity?.onBackPressed()
                     }
                 }
@@ -80,7 +86,8 @@ class EditStoreFragment : Fragment() {
         val vieww = mActivity!!.currentFocus
         if (vieww != null) {
             //Aquí esta la magia
-            val input = mActivity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val input =
+                mActivity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             input.hideSoftInputFromWindow(vieww.windowToken, 0)
         }
     }

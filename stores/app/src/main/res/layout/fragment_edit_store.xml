@@ -112,7 +112,7 @@
                 android:contentDescription="@string/description_img_photo"
                 android:src="@drawable/ic_image"
                 android:layout_marginStart="@dimen/common_padding_defauld"
-                android:layout_marginLeft="@dimen/common_padding_defauld" />
+                android:layout_marginLeft="@dimen/common_padding_defauld"/>
 
 
         </LinearLayout>
