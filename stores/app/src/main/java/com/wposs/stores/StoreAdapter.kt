@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.wposs.stores.databinding.ItemStoreBinding
 
 class StoreAdapter(
@@ -24,12 +26,21 @@ class StoreAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val store = stores.get(position)
+
         with(holder) {
             setListener(store)
             binding.tvName.text = store.name
             binding.cbFavorite.isChecked = store.isFavotite
+
+            Glide.with(mContext)
+                //.load(store.photoUrl)
+                .load("https://i2.wp.com/www.senpai.com.mx/wp-content/uploads/2021/12/Asi-se-ve-Itachi-Uchiha-con-el-estilo-de-animacion-de-Attack-on-Titan-y-Kimetsu-no-Yaiba.jpg?fit=1280%2C720&ssl=1")
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(binding.imgPhoto)
         }
-    }
+
+    } 
 
     override fun getItemCount(): Int = stores.size
 
@@ -74,7 +85,6 @@ class StoreAdapter(
                     true
                 }
             }
-
 
             binding.cbFavorite.setOnClickListener {
                 listener.onFavoriteStore(storeEntity)
