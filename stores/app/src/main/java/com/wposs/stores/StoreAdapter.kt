@@ -79,11 +79,16 @@ class StoreAdapter(
         fun setListener(storeEntity: StoreEntity) {
 
             with(binding.root) {
-                setOnClickListener { listener.onClick(storeEntity) }
+
+                setOnClickListener {
+                    listener.onClick(storeEntity.id)
+                }
+
                 setOnLongClickListener {
                     listener.onDeleteStore(storeEntity)
                     true
                 }
+
             }
 
             binding.cbFavorite.setOnClickListener {

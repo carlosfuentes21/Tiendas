@@ -20,6 +20,8 @@ class EditStoreFragment : Fragment() {
 
     private lateinit var mBinding: FragmentEditStoreBinding
     private var mActivity: MainActivity? = null
+    private var mIsEditMode: Boolean = false
+    private var mStoreEntity: StoreEntity? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentEditStoreBinding.inflate(inflater, container, false)
@@ -28,6 +30,14 @@ class EditStoreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val id = arguments?.getLong(getString(R.string.arg_id), 0)
+        if (id != null && id != 0L){
+            mIsEditMode = true
+            getStore(id)
+        }else{
+            Toast.makeText(activity, id.toString(), Toast.LENGTH_SHORT).show()
+        }
 
         mActivity = activity as? MainActivity
         mActivity?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -41,6 +51,31 @@ class EditStoreFragment : Fragment() {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(mBinding.imgPhoto)
+        }
+    }
+
+    private fun getStore(id: Long) {
+        doAsync {
+            mStoreEntity = StoreAplication.database.storeDao().getStoreById(id)
+            uiThread {
+                if (mStoreEntity != null){
+                    setUiStore(mStoreEntity!!)
+                }
+            }
+        }
+    }
+
+    private fun setUiStore(storeEntity: StoreEntity) {
+        with(mBinding){
+            etName.setText(storeEntity.name)
+            etPhone.setText(storeEntity.phone)
+            etWebsite.setText(storeEntity.website)
+            etPhotoUrl.setText(storeEntity.photoUrl)
+            Glide.with(requireActivity()!!)
+                .load(storeEntity.photoUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .into(imgPhoto)
         }
     }
 
