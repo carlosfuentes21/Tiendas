@@ -90,13 +90,7 @@ class EditStoreFragment : Fragment() {
                 true
             }
             R.id.action_save -> {
-                if (mStoreEntity!=null){
-                    /*val store = StoreEntity(
-                    name = mBinding.etName.text.toString().trim(),
-                    phone = mBinding.etPhone.text.toString().trim(),
-                    website = mBinding.etWebsite.text.toString().trim(),
-                    photoUrl = mBinding.etPhotoUrl.text.toString().trim()
-                )*/
+                if (mStoreEntity!=null && validateFields()){
 
                     with(mStoreEntity!!){
                         name = mBinding.etName.text.toString().trim()
@@ -136,6 +130,29 @@ class EditStoreFragment : Fragment() {
             else -> super.onOptionsItemSelected(item)
         }
         //return super.onOptionsItemSelected(item)
+    }
+
+    private fun validateFields(): Boolean {
+        var isValid = true
+        if (mBinding.etPhotoUrl.text.toString().trim().isEmpty()){
+            mBinding.tilPhotoUrl.error = getString(R.string.helper_required)
+            mBinding.etPhotoUrl.requestFocus()
+            isValid = false
+        }
+
+        if (mBinding.etPhone.text.toString().trim().isEmpty()){
+            mBinding.tilPhone.error = getString(R.string.helper_required)
+            mBinding.tilPhone.requestFocus()
+            isValid = false
+        }
+
+        if (mBinding.etName.text.toString().trim().isEmpty()){
+            mBinding.tilName.error = getString(R.string.helper_required)
+            mBinding.tilName.requestFocus()
+            isValid = false
+        }
+
+        return isValid
     }
 
     private fun hideKeyBoard() {
