@@ -2,6 +2,7 @@ package com.wposs.stores
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -11,9 +12,9 @@ import org.jetbrains.anko.uiThread
 
 class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
 
-    private lateinit var mBinding:ActivityMainBinding
+    private lateinit var mBinding: ActivityMainBinding
     private lateinit var mAdapter: StoreAdapter
-    private lateinit var mGridLayout:GridLayoutManager
+    private lateinit var mGridLayout: GridLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
     //lanzar fragmento
     private fun launchEditFragment(args: Bundle? = null) {
         val fragment = EditStoreFragment()
-        if (fragment != null){
+        if (fragment != null) {
             fragment.arguments = args
         }
         val fragmentManager = supportFragmentManager
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
         }
     }
 
-    private fun getStores(){
+    private fun getStores() {
         doAsync {
             val stores = StoreAplication.database.storeDao().getAllStores()
             uiThread {
@@ -83,9 +84,23 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
     }
 
     override fun onDeleteStore(storeEntity: StoreEntity) {
+        val items = arrayOf("Eliminar", "Llamar", "Ir al sitio web")
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.dialog_options_title)
+            .setItems(items, { dialog, i ->
+                when (i) {
+                    0 -> confirmDelete(storeEntity)
+                    1->Toast.makeText(this, "Llamar...", Toast.LENGTH_SHORT).show()
+                    2->Toast.makeText(this, "Sitio web...", Toast.LENGTH_SHORT).show()
+                }
+            })
+            .show()
+    }
+
+    private fun confirmDelete(storeEntity: StoreEntity) {
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.dialog_delete_title)
-            .setPositiveButton(R.string.dialog_delete_title_confirm,  { dialog, which ->
+            .setPositiveButton(R.string.dialog_delete_title_confirm, { dialog, which ->
                 doAsync {
                     StoreAplication.database.storeDao().deleteStore(storeEntity)
                     uiThread {
@@ -101,9 +116,9 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
     * MainAux
     * */
     override fun hideFab(isVisible: Boolean) {
-        if (isVisible){
+        if (isVisible) {
             mBinding.fab.show()
-        }else{
+        } else {
             mBinding.fab.hide()
         }
     }

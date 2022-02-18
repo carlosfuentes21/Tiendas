@@ -19,4 +19,5 @@
     <string name="dialog_delete_title">¿eliminar tienda?</string>
     <string name="dialog_delete_title_confirm">Eliminar</string>
     <string name="dialog_delete_cancel_title">Cancelar</string>
+    <string name="dialog_options_title">¿que desea hacer?</string>
 </resources>
