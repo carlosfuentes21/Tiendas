@@ -1,8 +1,10 @@
 package com.wposs.stores
 
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wposs.stores.databinding.ActivityMainBinding
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -17,16 +19,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
-
-//        mBinding.btnSave.setOnClickListener {
-//            val store = StoreEntity(name = mBinding.etName.text.toString().trim())
-//
-//            Thread{
-//                StoreAplication.database.storeDao().addStore(store)
-//            }.start()
-//
-//            mAdapter.add(store)
-//        }
 
         mBinding.fab.setOnClickListener { launchEditFragment() }
 
@@ -85,18 +77,24 @@ class MainActivity : AppCompatActivity(), OnClickListener, MainAux {
         doAsync {
             StoreAplication.database.storeDao().updateStore(storeEntity)
             uiThread {
-                mAdapter.update(storeEntity)
+                updateStore(storeEntity)
             }
         }
     }
 
     override fun onDeleteStore(storeEntity: StoreEntity) {
-        doAsync {
-            StoreAplication.database.storeDao().deleteStore(storeEntity)
-            uiThread {
-                mAdapter.delete(storeEntity)
-            }
-        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.dialog_delete_title)
+            .setPositiveButton(R.string.dialog_delete_title_confirm,  { dialog, which ->
+                doAsync {
+                    StoreAplication.database.storeDao().deleteStore(storeEntity)
+                    uiThread {
+                        mAdapter.delete(storeEntity)
+                    }
+                }
+            })
+            .setNegativeButton(R.string.dialog_delete_cancel_title, null)
+            .show()
     }
 
     /*

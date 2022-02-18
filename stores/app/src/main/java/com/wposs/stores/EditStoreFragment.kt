@@ -47,13 +47,18 @@ class EditStoreFragment : Fragment() {
             mStoreEntity = StoreEntity(name = "", phone = "", photoUrl = "")
         }
 
+        setupActionBar()
+        setupTextFiels()
+    }
+
+    private fun setupActionBar() {
         mActivity = activity as? MainActivity
         mActivity?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        mActivity?.supportActionBar?.title = getString(R.string.edit_store_add)
+        mActivity?.supportActionBar?.title =
+            if (mIsEditMode) getString(R.string.edit_store_title_edit)
+            else getString(R.string.edit_store_title_add)
 
         setHasOptionsMenu(true)
-
-        setupTextFiels()
     }
 
     private fun setupTextFiels() {
