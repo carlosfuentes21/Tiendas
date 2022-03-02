@@ -17,3 +17,5 @@ b
 .app/src/main/java/com/wposs/stores/StoreDao.kt,e\b\eb6b80e131594fd1aa29747ba83fd0c23b740aa9
 g
 7app/src/main/java/com/wposs/stores/EditStoreFragment.kt,e\8\e81e8571b8254a9c5bee8613c01183acd3cf30c8
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
